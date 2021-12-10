@@ -1,9 +1,9 @@
 var Express = require("express");
-var bodyParser = require("body-parser");
+//var bodyParser = require("body-parser");
 
 var app = Express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(Express.json());
+//app.use(bodyParser.urlencoded({ extended: true }));
 
 var MongoClient = require("mongodb").MongoClient;
 const { request, response } = require("express");
@@ -11,10 +11,6 @@ var CONNECTION_STRING = "mongodb+srv://root:culturapp2021@cluster0.4onwb.mongodb
 
 var cors = require('cors')
 app.use(cors())
-
-var bodyParser = require("body-parser");
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true}));
 
 var DATABASE = "culturappDB";
 var database;
@@ -25,7 +21,6 @@ app.listen(49146, () => {
         database = client.db(DATABASE);
         console.log("Mongo DB Connection Successfull");
     })
-
 });
 
 const swaggerJsDoc = require('swagger-jsdoc');
@@ -64,6 +59,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.get('/', (request, response) => {
     response.json('Hello World');
 });
+
+
 
 /**
  * @swagger
@@ -124,12 +121,38 @@ app.get('/', (request, response) => {
  * 
  */
 
- app.get('/api/employee', (request, response) => {
-    var data = fs.readFileSync('employee.json');
-    var myObject = JSON.parse(data);
 
-    response.send(myObject);
+app.get('/administrator', (request, response) => {
+
+    database.collection("Administrator").find({}).toArray((error, result) => {
+        if (error) {
+            console.log(error);
+        }
+
+        response.send(result);
+    })
+
 })
+
+/*
+app.post('/notes', (request, response) => {
+
+    database.collection("Notes").count({}, function (error, numOfNotes) {
+        if (error) {
+            console.log(error);
+        }
+
+        database.collection("Notes").insertOne({
+            courseId: numOfNotes + 1,
+            userName: request.body['userName'],
+            courseId: request.body['courseId']
+                 });
+         
+                 response.json("Added Successfully");
+             })
+         
+         })
+*/
 
 /**
  * @swagger
@@ -189,9 +212,6 @@ app.get('/', (request, response) => {
  *                               example: "453555137237678"
  * 
  */
-
-
-
  app.post('/administrator', (request, response) => {
 
     database.collection("Administrator").count({}, function (error, numOfAdministrator) {
@@ -200,7 +220,6 @@ app.get('/', (request, response) => {
         }
 
         database.collection("Administrator").insertOne({
-            id: numOfAdministrator + 1,
             passwordHash: request.body['passwordHash'],
             email: request.body['email'],
             userType: request.body['userType'],
@@ -214,9 +233,20 @@ app.get('/', (request, response) => {
         //arr1: [0,2],
         //arr2: [{name:'a', namme:'b'}]
          });
-
-    response.json(request.body);
+        
+         console.log(request.body);
+    response.json("success");
     })
+})
+
+
+app.delete('/administrator/:_id', (request, response) => {
+         
+    database.collection("Administrator").deleteOne({
+        id: parseInt(request.params.id)
+    });
+
+    response.json("Deleted");
 })
 
 /**
