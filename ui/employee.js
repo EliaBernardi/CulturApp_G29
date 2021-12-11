@@ -1,12 +1,12 @@
 const employee = {
   template: `
   <div>
-
-  <button type="button" class="btn btn-primary m-2 fload-end" data-bs-toggle="modal" data-bs-target="#exampleModal"
+  <!--
+  <button type="button" class="btn btn-light px-2 py-0 top-right" data-bs-toggle="modal" data-bs-target="#exampleModal"
     @click="addClick()">
     Add Employee
   </button>
-
+  
   <table class="table table-striped">
     <thead>
       <tr>
@@ -57,6 +57,15 @@ const employee = {
     </tbody>
     </thead>
   </table>
+  -->
+
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">First checkbox</li>
+    <li class="list-group-item">Second checkbox</li>
+    <li class="list-group-item">Third checkbox</li>
+    <li class="list-group-item">Fourth checkbox</li>
+    <li class="list-group-item">Fifth checkbox</li>
+  </ul>
 
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -88,12 +97,12 @@ const employee = {
                 <span class="input-group-text">Password</span>
                 <input type="text" class="form-control" v-model="EmployeePassword">
               </div>
-
+<!-- @TODO: reinserimento password con controllo
               <div class="input-group mb-3">
                 <span class="input-group-text">Password</span>
                 <input type="text" class="form-control" v-model="EmployeePassword">
               </div>
-
+-->
               <div class="input-group mb-3">
                 <span class="input-group-text">Data di nascita</span>
                 <input type="date" class="form-control" v-model="DateOfBirth">
@@ -102,7 +111,7 @@ const employee = {
             </div>
           </div>
           <div class="d-grid gap-2">
-            <button type="button" @click="createClick()" v-if="EmployeeId==0" class="btn btn-primary">
+            <button type="button" @click="createEmployee()" v-if="EmployeeId==0" class="btn btn-primary">
               Create
             </button>
           </div>
@@ -119,17 +128,48 @@ const employee = {
   data() {
     return {
       employees: [],
-      modalTitle: "",
-      EmployeeId: 0,
-      EmployeeName: "",
-      Department: "",
-      DateOfJoining: "",
-      PhotoFileName: "anonymous.png",
-      PhotoPath: variables.PHOTO_URL
+      modalTitle: '',
+      EmployeeName: '',
+      EmployeeSurname: '',
+      EmployeeEmail: '',
+      EmployeePsw: '',
+      DateOfBirth: '',
     }
   },
-  methods: {},
+  methods: {
+    fetchData() {
+      axios.get(variables.API_URL + 'employee')
+        .then((response) => {
+          this.employees = response.data;
+        });
+    },
+    addClick() {
+      this.modalTitle = 'Add employee';
+      this.EmployeeName = '',
+        this.EmployeeSurname = '',
+        this.EmployeeEmail = '',
+        this.DateOfBirth = ''
+    },
+    createEmployee() {
+      axios.post(variables.API_URL + "employee", {
+        EmployeeName: this.EmployeeName,
+        EmployeeSurname: this.EmployeeSurname,
+        EmployeeEmail: this.EmployeeEmail,
+        EmployeePsw: this.EmployeePsw,
+        DateOfBirth: this.DateOfBirth
+      })
+        .then((response) => {
+          this.fetchData();
+          alert(response.data);
+        });
+    },
+    refreshLayout() {
+      document.querySelector('#addEmployee').className = 'btn btn-light px-2 py-0';
+    }
+  },
   mounted: function () {
+    this.refreshLayout();
+    this.fetchData();
   }
 
 }

@@ -10,7 +10,7 @@
 
 <body>
   <div id="app">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-fixed-top navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
         <router-link class="navbar-brand" to="/">CulturApp</router-link>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
@@ -41,6 +41,10 @@
             </li>
           </ul>
         </div>
+        <button type="button" id="addEmployee" class="btn btn-light px-2 py-0 d-none" data-bs-toggle="modal"
+          data-bs-target="#exampleModal" @click="addClick()">
+          Add Employee
+        </button>
       </div>
     </nav>
     <router-view></router-view>

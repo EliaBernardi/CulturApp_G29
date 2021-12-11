@@ -3,7 +3,7 @@ html {
 }
 
 body {
-  background-color: rgb(141, 122, 224);
+  background-color: rgb(255, 255, 255);
   overflow-y: hidden;
   height: 100%;
 }
@@ -42,8 +42,22 @@ router-link {
 
 #googleMap {
   left:0;
-  height: 100%;
+  top: 0;
+  height: calc(100vh - 56px);
   width: -webkit-fill-available;
   width: -moz-available;
+  position: relative;
+}
+
+.form-check-input.large-spacing {
+  margin-right: 50px;
+  padding: 10px;
+}
+
+.btn.top-right {
   position: absolute;
+  height: 30px;
+  top: 13px;
+  right: 12px;
+  font-size: 1rem;
 }
