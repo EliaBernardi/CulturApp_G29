@@ -1,9 +1,10 @@
 var Express = require("express");
-//var bodyParser = require("body-parser");
+var bodyParser = require("body-parser");
+var ObjectId = require("mongodb").ObjectId
 
 var app = Express();
 app.use(Express.json());
-//app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 var MongoClient = require("mongodb").MongoClient;
 const { request, response } = require("express");
@@ -61,12 +62,11 @@ app.get('/', (request, response) => {
 });
 
 
-
 /**
  * @swagger
  * /administrator:
  *   get:
- *     summary: Retrieve all information of a specific administrator.
+ *     summary: Return all information of a specific administrator.
  *     description: Retrieve a list of employees from the Server.
  *     responses:
  *       200:
@@ -121,38 +121,19 @@ app.get('/', (request, response) => {
  * 
  */
 
+/* inutile?????
+ app.get('/administrator/:_id', (request, response) => {
 
-app.get('/administrator', (request, response) => {
-
-    database.collection("Administrator").find({}).toArray((error, result) => {
-        if (error) {
-            console.log(error);
-        }
-
-        response.send(result);
-    })
-
-})
-
-/*
-app.post('/notes', (request, response) => {
-
-    database.collection("Notes").count({}, function (error, numOfNotes) {
-        if (error) {
-            console.log(error);
-        }
-
-        database.collection("Notes").insertOne({
-            courseId: numOfNotes + 1,
-            userName: request.body['userName'],
-            courseId: request.body['courseId']
-                 });
-         
-                 response.json("Added Successfully");
-             })
-         
-         })
-*/
+    database.collection("Administrator").find({"_id": parseInt(request.params.id)}).toArray((error, result) => {
+           if (error) {
+               console.log(error);
+           }
+   
+           response.send(result);
+       })
+    
+   })
+*/ 
 
 /**
  * @swagger
@@ -212,6 +193,7 @@ app.post('/notes', (request, response) => {
  *                               example: "453555137237678"
  * 
  */
+
  app.post('/administrator', (request, response) => {
 
     database.collection("Administrator").count({}, function (error, numOfAdministrator) {
@@ -228,7 +210,7 @@ app.post('/notes', (request, response) => {
             dateOfBirth: request.body['dateOfBirth'],
             location: request.body['location'],
             deviceImei: [{imei1: request.body['imei1']}],
-            employeesList: [{imei1: request.body['employee1']}]
+            employeesList: [{_id: ObjectId(), passwordHash: request.body['email']}]
 
         //arr1: [0,2],
         //arr2: [{name:'a', namme:'b'}]
@@ -239,16 +221,108 @@ app.post('/notes', (request, response) => {
     })
 })
 
-
-app.delete('/administrator/:_id', (request, response) => {
+//prende un determinato employee dall'amministratore predefinito
+app.get('/administrator/:id', (request, response) => {
          
-    database.collection("Administrator").deleteOne({
-        id: parseInt(request.params.id)
-    });
+    database.collection("Administrator").find({employeesList: {$elemMatch: {_id : ObjectId(request.params.id)}}}).toArray((error, result) => {
+    //database.collection("Administrator").find({employeesList: {_id : ObjectId(request.params.id)}}).toArray((error, result) => {
+           if (error) {
+               console.log(error);
+           }
+   
+           response.send(result);
+       })
+    
+   })
 
-    response.json("Deleted");
+app.put('/administrator', (request, response) => {
+         
+    database.collection("Administrator").updateOne(
+        //Filter Criteria
+        {
+            "_id": "61b3f7691461bae021dd6baf"
+        },
+        //Update
+        {
+            $set:
+            {
+                employeesList:[{name: "ciao"}]
+            }
+
+        }
+    );
+
+    response.json("Updated Successfully");
 })
 
+/**
+ * @swagger
+ * /administrator:
+ *   delete:
+ *     summary: Remove an administrator.
+ *     description: Remove an administrator from the Server.
+ *     responses:
+ *       200:
+ *         description: A list of employees.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: ObjectId
+ *                         description: Employee's id.
+ *                         example: 61b282626909cbff33c194af
+ *                       passwordHash:
+ *                         type: string
+ *                         description: Employee's password encrypted with SHA1 hash.
+ *                         example: "5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8"
+ *                       email:
+ *                          type: string
+ *                          description: Employee's email.
+ *                          example: "luigi@gmail.com"
+ *                       userType:
+ *                          type: string
+ *                          description: Employee's type is 1.
+ *                          example: 1
+ *                       name:
+ *                          type: string
+ *                          description: Employee's name.
+ *                          example: "Luigi"
+ *                       surname:
+ *                          type: string
+ *                          description: The product's location.
+ *                          example: "Bonetto"
+ *                       dateOfBirth:
+ *                          type: Date
+ *                          description: Employee's date of birth
+ *                          example: 1998-10-08T23:00:00.000+00:00
+ *                       imeiList:
+ *                         type: array
+ *                         items:
+ *                           type: string
+ *                           properties:
+ *                             0:
+ *                               type: string
+ *                               description: Employee's device's imei.
+ *                               example: "453555137237678"
+ * 
+ */
+
+
+app.delete('/administrator/:id', (request, response) => {
+
+    database.collection("Administrator").deleteOne({
+        _id: ObjectId(request.params.id)
+    });
+
+    response.json(request.params.id);
+})
 /**
  * @swagger
  * /ticket:
@@ -281,6 +355,8 @@ app.delete('/administrator/:_id', (request, response) => {
  *                          description: The product's location
  *                          example: Refrigerated foods
  */
+
+
  app.get('/ticket', (request, response) => {
     var data = fs.readFileSync('ticket.json');
     var myObject = JSON.parse(data);
