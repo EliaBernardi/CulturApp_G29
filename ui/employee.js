@@ -59,12 +59,17 @@ const employee = {
   </table>
   -->
 
-  <ul class="list-group list-group-flush">
-    <li class="list-group-item">First checkbox</li>
-    <li class="list-group-item">Second checkbox</li>
-    <li class="list-group-item">Third checkbox</li>
-    <li class="list-group-item">Fourth checkbox</li>
-    <li class="list-group-item">Fifth checkbox</li>
+  <ul v-for="emp in employees" class="list-group list-group-flush">
+    <li class="list-group-item">
+      <div class="row">
+        <div class="col">{{emp.EmployeeName + " " + emp.EmployeeSurname}}</div>
+        <div class="col">{{emp.EmployeeEmail}}</div>
+        <div class="col">{{emp.DateOfBirth}}</div>
+        <div class="col">
+          <button type="button" class="btn btn-light px-2 py-0">sono un bottone</button>
+        </div>
+      </div>
+    </li>
   </ul>
 
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -76,11 +81,12 @@ const employee = {
         </div>
 
         <div class="modal-body">
+          <form>
           <div class="flex-row bd-highlight mb-3">
             <div class="p-2 bd-highlight">
               <div class="input-group mb-3">
                 <span class="input-group-text">Nome</span>
-                <input type="text" class="form-control" v-model="EmployeeName">
+                <input type="text" class="form-control" v-model="EmployeeName" required>
               </div>
 
               <div class="input-group mb-3">
@@ -95,14 +101,15 @@ const employee = {
 
               <div class="input-group mb-3">
                 <span class="input-group-text">Password</span>
-                <input type="text" class="form-control" v-model="EmployeePassword">
+                <input type="text" class="form-control" v-model="EmployeePsw">
               </div>
-<!-- @TODO: reinserimento password con controllo
+              
+            <!-- @TODO: reinserimento password con controllo
               <div class="input-group mb-3">
                 <span class="input-group-text">Password</span>
                 <input type="text" class="form-control" v-model="EmployeePassword">
               </div>
--->
+                -->
               <div class="input-group mb-3">
                 <span class="input-group-text">Data di nascita</span>
                 <input type="date" class="form-control" v-model="DateOfBirth">
@@ -111,10 +118,11 @@ const employee = {
             </div>
           </div>
           <div class="d-grid gap-2">
-            <button type="button" @click="createEmployee()" v-if="EmployeeId==0" class="btn btn-primary">
+            <button type="submit" @click="createEmployee()" class="btn btn-primary">
               Create
             </button>
           </div>
+          </form>
         </div>
 
       </div>
@@ -151,17 +159,20 @@ const employee = {
         this.DateOfBirth = ''
     },
     createEmployee() {
-      axios.post(variables.API_URL + "employee", {
-        EmployeeName: this.EmployeeName,
-        EmployeeSurname: this.EmployeeSurname,
-        EmployeeEmail: this.EmployeeEmail,
-        EmployeePsw: this.EmployeePsw,
-        DateOfBirth: this.DateOfBirth
-      })
-        .then((response) => {
-          this.fetchData();
-          alert(response.data);
-        });
+      //@TODO qui non funziona, scegli tipologia di dato con cui fare calcoli
+      if (this.DateOfBirth < new Date().toLocaleString() - 18) {
+        axios.post(variables.API_URL + "employee", {
+          EmployeeName: this.EmployeeName,
+          EmployeeSurname: this.EmployeeSurname,
+          EmployeeEmail: this.EmployeeEmail,
+          EmployeePsw: this.EmployeePsw,
+          DateOfBirth: this.DateOfBirth
+        })
+          .then((response) => {
+            this.fetchData();
+            alert(response.data);
+          });
+      }
     },
     refreshLayout() {
       document.querySelector('#addEmployee').className = 'btn btn-light px-2 py-0';
