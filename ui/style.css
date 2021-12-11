@@ -1,0 +1,49 @@
+html {
+  height: 100vh;
+}
+
+body {
+  background-color: rgb(141, 122, 224);
+  overflow-y: hidden;
+  height: 100%;
+}
+
+router-link {
+  cursor: pointer;
+}
+
+.navbar-blur {
+  position: fixed;
+  top: -6px;
+  left: -6px;
+  height: 91px;
+  background: rgba(0, 0, 0, .5);
+  -webkit-filter: blur(6px);
+  -moz-filter: blur(6px);
+  -o-filter: blur(6px);
+  -ms-filter: blur(6px);
+  filter: blur(6px);
+  z-index: 1010;
+}
+
+.navbar-blur {
+  position: fixed;
+  top: -6px;
+  left: -6px;
+  height: 91px;
+  background: rgba(0, 0, 0, .5);
+  -webkit-filter: blur(6px);
+  -moz-filter: blur(6px);
+  -o-filter: blur(6px);
+  -ms-filter: blur(6px);
+  filter: blur(6px);
+  z-index: 1010;
+}
+
+#googleMap {
+  left:0;
+  height: 100%;
+  width: -webkit-fill-available;
+  width: -moz-available;
+  position: absolute;
+}
