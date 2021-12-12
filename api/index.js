@@ -1,6 +1,8 @@
 var Express = require("express");
 var bodyParser = require("body-parser");
+var CryptoJS = require("crypto-js");
 var ObjectId = require("mongodb").ObjectId
+
 
 var app = Express();
 app.use(Express.json());
@@ -56,7 +58,8 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-var _idAmministratore = ObjectId("61b54eaa4768e41b2a63247b");
+var _idAmministratore = ObjectId("61b62d85d4fcaf1dc5751355");
+var SHA256 = require("crypto-js/sha256");
 
 app.get('/', (request, response) => {
     response.json('Hello World');
@@ -203,10 +206,10 @@ app.get('/', (request, response) => {
         database.collection("Administrator").insertOne({
             name: request.body['name'],
             surname: request.body['surname'],
-            passwordHash: request.body['passwordHash'],
+            passwordHash: SHA256(request.body['passwordHash']).toString(),
             email: request.body['email'],
-            userType: 0,
             dateOfBirth: request.body['dateOfBirth'],
+            userType: 0,
             employeesList: [],
             location: {
                 locationId: ObjectId("61b54a4252b010dff740db83"),
@@ -328,7 +331,7 @@ app.put('/employee', (request, response) => {
         "employeesList" : {_id: ObjectId(),
                             name: request.body['name'],
                             surname: request.body['surname'],
-                            passwordHash: request.body['passwordHash'],
+                            passwordHash: SHA256(request.body['passwordHash']).toString(),
                             email: request.body['email'],
                             dateOfBirth: request.body['dateOfBirth'],
                             userType: 1
@@ -497,8 +500,7 @@ app.post('/ticket', (request, response) => {
                 locationTicketPrice: parseInt("5"),
                 locationDescription: "Il castello del Buonconsiglio è uno degli edifici più conosciuti di Trento e uno tra i maggiori complessi monumentali del Trentino-Alto Adige"
             }
-         });
-        
+         }); 
          response.json("AGGIUNTA ticket");
     })
 })
@@ -517,6 +519,5 @@ app.put('/ticket/:id', (request, response) => {
         }
     );
         
-
     response.json("BIGLIETTO validato");
 })
