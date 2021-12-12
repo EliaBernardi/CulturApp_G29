@@ -1,5 +1,5 @@
 const routes = [
-  { path: '/home', component: home },
+  { path: '/', component: home },
   { path: '/employee', component: employee },
   { path: '/ticket', component: ticket }
 ]
