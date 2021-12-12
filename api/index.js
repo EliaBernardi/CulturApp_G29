@@ -124,7 +124,7 @@ app.get('/', (request, response) => {
  *                               example: "453555137237678"
  * 
  */
- app.get('/administrator', (request, response) => {
+app.get('/administrator', (request, response) => {
 
     database.collection("Administrator").find({"_id": _idAmministratore}).toArray((error, result) => {
            if (error) {
@@ -133,8 +133,7 @@ app.get('/', (request, response) => {
    
            response.send(result);
        })
-    
-   })
+})
 
 
 /**
@@ -297,8 +296,9 @@ app.get('/employee/:id', (request, response) => {
             let ris = result[0].employeesList.find(x =>  x._id = ObjectId(request.params.id));
             response.send(ris);
        });
-    response.json("RICEZIONE employee success");
+    //response.json("RICEZIONE employee success");
 })
+
 
 //prende la lista di employee dall'amministratore predefinito
 app.get('/employee', (request, response) => {
@@ -311,7 +311,8 @@ app.get('/employee', (request, response) => {
            response.send(ris);
        })
     
-   })
+})
+
 
 //cancella un determinato employee dall'amministratore predefinito
 app.delete('/employee/:id', (request, response) => {
@@ -323,6 +324,7 @@ app.delete('/employee/:id', (request, response) => {
     );
     response.json("CANCELLAZIONE employee success");
 })
+
 
 //aggiunge un employee all'amministratore predefinito
 app.put('/employee', (request, response) => {
@@ -340,26 +342,22 @@ app.put('/employee', (request, response) => {
     response.json("AGGIUNTA employee success");
 })
 
+
 //modifica un determinato employee dall'amministratore predefinito
 app.put('/employee/:id', (request, response) => {
     database.collection("Administrator").updateOne(
-        //Filter Criteria
-        {
-            "_id": _idAmministratore
-        },
-        //Update
-        {
-            $set:
-            {
-                passwordHash : "PRovaaaa"
-            }
-        },
-        {
-            arrayFilters: [{'employeesList._id':ObjectId(request.params.id)}]
-        }
-    );
+        {_id : _idAmministratore , "employeesList._id" : ObjectId(request.params.id) } , 
+                {$set : {...(request.body.name && {"employeesList.$.name": request.body['name']}),
+                        ...(request.body.surname && {"employeesList.$.surname": request.body['surname']}),
+                        ...(request.body.passwordHash && {"employeesList.$.passwordHash": request.body['passwordHash']}),
+                        ...(request.body.email && {"employeesList.$.email": request.body['email']}),
+                        ...(request.body.dateOfBirth && {"employeesList.$.dateOfBirth": request.body['dateOfBirth']}),
+                } 
+                } ,
+                false , 
+                true);
+    
         
-
     response.json("AGGIORNAMENTO employee Successfully");
 })
 
@@ -520,4 +518,17 @@ app.put('/ticket/:id', (request, response) => {
     );
         
     response.json("BIGLIETTO validato");
+})
+
+//ritorna le informazioni del punto di interesse
+app.get('/pointOfInterest', (request, response) => {
+
+    database.collection("Administrator").find({"_id": _idAmministratore}).toArray((error, result) => {
+           if (error) {
+               console.log(error);
+           }
+           
+           let ris = result[0].location;
+           response.send(ris);
+       })    
 })
