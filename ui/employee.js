@@ -146,7 +146,7 @@ const employee = {
   },
   methods: {
     fetchData() {
-      axios.get(variables.API_URL + 'employee')
+      axios.get(variables.API_URL + '/employee')
         .then((response) => {
           this.employees = response.data;
         });
@@ -161,7 +161,7 @@ const employee = {
     createEmployee() {
       //@TODO qui non funziona, scegli tipologia di dato con cui fare calcoli
       if (this.DateOfBirth < new Date().toLocaleString() - 18) {
-        axios.post(variables.API_URL + "employee", {
+        axios.post(variables.API_URL + "/employee", {
           EmployeeName: this.EmployeeName,
           EmployeeSurname: this.EmployeeSurname,
           EmployeeEmail: this.EmployeeEmail,
