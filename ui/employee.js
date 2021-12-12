@@ -59,8 +59,8 @@ const employee = {
   </table>
   -->
 
-  <ul v-for="emp in employees" class="list-group list-group-flush">
-    <li class="list-group-item">
+  <ul class="list-group list-group-flush">
+    <li v-for="emp in employees" class="list-group-item">
       <div class="row">
         <div class="col">{{emp.EmployeeName + " " + emp.EmployeeSurname}}</div>
         <div class="col">{{emp.EmployeeEmail}}</div>
