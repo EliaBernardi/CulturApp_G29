@@ -56,7 +56,7 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-var _idAmministratore = ObjectId("61b54eaa4768e41b2a63247b");
+var _idAmministratore = ObjectId("61b62d85d4fcaf1dc5751355");
 
 app.get('/', (request, response) => {
     response.json('Hello World');
