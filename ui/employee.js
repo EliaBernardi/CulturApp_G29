@@ -5,23 +5,23 @@ const employee = {
   <ul class="list-group list-group-flush">
     <li v-for="emp in employees" class="list-group-item bg-secondary">
       <div class="row">
-        <div class="col-3 d-flex">
-        <div class="px-3 py-2">
+        <div class="col-3 d-flex justify-content-center align-items-center">
+          <div class="px-3 py-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 15 15">
               <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
             </svg>
           </div>
-          <p style="border-radius: 10px" class="px-3 mx-3 my-0 bg-warning border border-dark">
+          <p style="border-radius: 10px; width: 80%" class="px-3 mx-3 my-0 bg-warning border border-dark">
             <b>Nome: </b>{{emp.name}}<br><b>Cognome: </b>{{emp.surname}}
           </p>
         </div>
         <div class="col d-flex justify-content-center align-items-center">
-          <p style="padding: 13px 16px; border-radius: 10px" class="m-0 bg-warning border border-dark">
+          <p style="padding: 13px 16px; border-radius: 10px; width: 80%" class="m-0 bg-warning border border-dark text-center">
             <b>Email: </b>{{emp.email}}
           </p>
         </div>
         <div class="col d-flex justify-content-center align-items-center">
-          <p style="padding: 13px 16px; border-radius: 10px" class="m-0 bg-warning border border-dark">
+          <p style="padding: 13px 16px; border-radius: 10px; width: 80%" class="m-0 bg-warning border border-dark text-center">
             <b>Data di nascita: </b>{{emp.dateOfBirth}}
           </p>
         </div>
@@ -136,6 +136,7 @@ const employee = {
     },
     refreshLayout() {
       document.querySelector('#addEmployee').className = 'btn btn-light px-2 py-0';
+      document.querySelector('#map').className = 'd-none';
     }
   },
   mounted: function () {
