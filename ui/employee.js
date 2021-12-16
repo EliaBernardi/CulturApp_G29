@@ -1,12 +1,12 @@
 const employee = {
   template: `
   <div>
-
-  <button type="button" id="addEmployee" class="btn btn-light px-2 py-0 top-right" data-bs-toggle="modal"
-  data-bs-target="#exampleModal" @click="addClick()">Add Employee</button>
-
+  <div class="top-right-navbar-buttons">
+    <button type="button" class="btn btn-light px-2 py-0 mx-3" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="addClick()">Add Employee</button>
+    <button type="button" class="btn btn-light px-2 py-0 mx-3" @click="DeleteClick()">Delete Employee</button>
+  </div>
   <ul class="list-group list-group-flush">
-    <li v-for="emp in employees" class="list-group-item bg-secondary">
+    <li v-for="(emp,  index) in employees" :key="index" class="list-group-item bg-secondary">
       <div class="row">
         <div class="col-3 d-flex justify-content-center align-items-center">
           <div class="px-3 py-2">
@@ -25,11 +25,14 @@ const employee = {
         </div>
         <div class="col d-flex justify-content-center align-items-center">
           <p style="padding: 13px 16px; border-radius: 10px; width: 80%" class="m-0 bg-warning border border-dark text-center">
-            <b>Data di nascita: </b>{{emp.dateOfBirth}}
+            <b>Data di nascita: </b>{{index}}
           </p>
         </div>
-        <div class="col d-flex justify-content-center">
-          <button type="button" class="btn btn-light px-2 py-0">Modifica utente</button>
+        <div class="col-1 d-flex justify-content-center align-items-center">
+          <button type="button" class="btn btn-light px-2 py-0" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="modifyClick(emp)">Modifica utente</button>
+        </div>
+        <div class="col-1 d-flex justify-content-center align-items-center">
+        <input class="form-check-input" type="checkbox" v-bind:value=index v-model="checkedEmployees"></input>
         </div>
       </div>
     </li>
@@ -99,6 +102,7 @@ const employee = {
   data() {
     return {
       employees: [],
+      checkedEmployees: [],
       modalTitle: '',
       name: '',
       surname: '',
@@ -120,6 +124,14 @@ const employee = {
       this.surname = ''
       this.email = ''
       this.dateOfBirth = ''
+    },
+    modifyClick(employee) {
+      this.modalTitle = 'Modify employee'
+      this.name = employee.name
+      this.surname = employee.surname
+      this.email = employee.email
+      this.dateOfBirth = employee.dateOfBirth
+      this.passwordHash = employee.passwordHash
     },
     createEmployee() {
       //@TODO qui non funziona, scegli tipologia di dato con cui fare calcoli

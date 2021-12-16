@@ -26,14 +26,28 @@ router-link {
   padding: 10px;
 }
 
-.btn.top-right {
+/* .btn.top-right {
   position: absolute;
   height: 30px;
   top: 13px;
   right: 12px;
   font-size: 1rem;
+} */
+
+.top-right-navbar-buttons {
+  position: absolute;
+  height: 30px;
+  top: 13px;
+  right: 0;
+  display: flex;
 }
 
 .list-group-item {
   border-color: rgb(0, 0, 0);
+}
+
+.form-check-input {
+  width: 1.5em;
+  height: 1.5em;
+  margin-top: 0;
 }
