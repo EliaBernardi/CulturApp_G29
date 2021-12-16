@@ -41,17 +41,18 @@
             </li>
           </ul>
         </div>
-        <button type="button" id="addEmployee" class="btn btn-light px-2 py-0 d-none" data-bs-toggle="modal"
+        <!--         <button type="button" id="addEmployee" class="btn btn-light px-2 py-0 d-none" data-bs-toggle="modal"
           data-bs-target="#exampleModal" @click="addClick()">
           Add Employee
-        </button>
+        </button> -->
       </div>
     </nav>
+
     <router-view></router-view>
+
+    <div id="map"></div>
+
   </div>
-
-  <div id="map"></div>
-
   <script>
     var map = null;
     var marker = null;
@@ -74,7 +75,7 @@
       var infowindow = new google.maps.InfoWindow({
         content: contentString
       });
-      
+
       /****** info window with click *******/
       marker.addListener('click', function () {
         infowindow.open(map, marker);

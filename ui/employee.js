@@ -2,6 +2,9 @@ const employee = {
   template: `
   <div>
 
+  <button type="button" id="addEmployee" class="btn btn-light px-2 py-0 top-right" data-bs-toggle="modal"
+  data-bs-target="#exampleModal" @click="addClick()">Add Employee</button>
+
   <ul class="list-group list-group-flush">
     <li v-for="emp in employees" class="list-group-item bg-secondary">
       <div class="row">
@@ -37,7 +40,7 @@ const employee = {
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button id="dismissModalButton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body">
@@ -101,47 +104,47 @@ const employee = {
       surname: '',
       email: '',
       passwordHash: '',
-      dateOfBirth: '',
+      dateOfBirth: ''
     }
   },
   methods: {
     fetchData() {
       axios.get(variables.API_URL + '/employee')
         .then((response) => {
-          this.employees = response.data;
+          this.employees = response.data
         });
     },
     addClick() {
-      this.modalTitle = 'Add employee';
-      this.name = '',
-        this.surname = '',
-        this.email = '',
-        this.dateOfBirth = ''
+      this.modalTitle = 'Add employee'
+      this.name = ''
+      this.surname = ''
+      this.email = ''
+      this.dateOfBirth = ''
     },
     createEmployee() {
       //@TODO qui non funziona, scegli tipologia di dato con cui fare calcoli
-      if (this.DateOfBirth < new Date().toLocaleString() - 18) {
-        axios.post(variables.API_URL + "/employee", {
-          name: this.name,
-          surname: this.surname,
-          email: this.email,
-          passwordHash: this.passwordHash,
-          dateOfBirth: this.dateOfBirth
-        })
-          .then((response) => {
-            this.fetchData();
-            alert(response.data);
-          });
-      }
+      //if (this.DateOfBirth < new Date().toLocaleString() - 18) {
+      axios.put(variables.API_URL + "/employee", {
+        name: this.name,
+        surname: this.surname,
+        email: this.email,
+        passwordHash: this.passwordHash,
+        dateOfBirth: this.dateOfBirth
+      })
+        .then((response) => {
+          this.fetchData()
+          alert(response.data)
+          document.querySelector('#dismissModalButton').click()
+        });
+      //}
     },
     refreshLayout() {
-      document.querySelector('#addEmployee').className = 'btn btn-light px-2 py-0';
-      document.querySelector('#map').className = 'd-none';
+      document.querySelector('#map').className = 'd-none'
     }
   },
   mounted: function () {
-    this.refreshLayout();
-    this.fetchData();
+    this.refreshLayout()
+    this.fetchData()
   }
 
 }
