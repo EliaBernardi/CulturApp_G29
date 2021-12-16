@@ -47,7 +47,7 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url: 'http://localhost:49146/',
+                url: 'http://localhost:49146/', 
                 description: 'Development server',
             },
         ],
@@ -71,59 +71,82 @@ app.get('/', (request, response) => {
  * /administrator:
  *   get:
  *     summary: Return all information of a specific administrator.
- *     description: Retrieve a list of employees from the Server.
+ *     description: Retrieve all information of an administrator from the Server.
  *     responses:
  *       200:
- *         description: A list of employees.
+ *         description: Return all information of a specific administrator.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
  *                       _id:
  *                         type: ObjectId
- *                         description: Employee's id.
+ *                         description: Administrator's id.
  *                         example: 61b282626909cbff33c194af
- *                       passwordHash:
- *                         type: string
- *                         description: Employee's password encrypted with SHA1 hash.
- *                         example: "5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8"
- *                       email:
- *                          type: string
- *                          description: Employee's email.
- *                          example: "luigi@gmail.com"
- *                       userType:
- *                          type: string
- *                          description: Employee's type is 1.
- *                          example: 1
  *                       name:
  *                          type: string
- *                          description: Employee's name.
+ *                          description: Administrator's name.
  *                          example: "Luigi"
  *                       surname:
  *                          type: string
- *                          description: The product's location.
+ *                          description: Administrator's surname.
  *                          example: "Bonetto"
+ *                       passwordHash:
+ *                         type: string
+ *                         description: Administrator's password encrypted with SHA256 hash.
+ *                         example: "5E884898DA28047151D0E56F8DC6292773603D0D6AABBDD62A11EF721D1542D8"
+ *                       email:
+ *                          type: string
+ *                          description: Administrator's email.
+ *                          example: "luigi.bonetto@gmail.com"
  *                       dateOfBirth:
- *                          type: Date
- *                          description: Employee's date of birth
- *                          example: 1998-10-08T23:00:00.000+00:00
- *                       imeiList:
- *                         type: array
- *                         items:
- *                           type: string
+ *                          type: string
+ *                          description: Administrator's date of birth
+ *                          example: 07/09/1980
+ *                       userType:
+ *                          type: string
+ *                          description: Administrator's type is 0.
+ *                          example: 0
+ *                       employeesList:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *                             properties:
+ *                               _id:
+ *                                 type: ObjectId
+ *                                 description: Employee's id.
+ *                                 example: "61b62e50edc707e00f53cc23"
+ *                               nome:
+ *                                 type: string
+ *                                 description: Employee's name.
+ *                                 example: "Claudio"
+ *                               surname:
+ *                                 type: string
+ *                                 description: Employee's surname.
+ *                                 example: "Franza"
+ *                               passwordHash:
+ *                                 type: string
+ *                                 description: Employee's password encrypted with SHA256 hash.
+ *                                 example: "1f489582f7ea4c208b70219a2bb6a322227a7516630530a10ed7f2710cfbe447"
+ *                               email:
+ *                                 type: string
+ *                                 description: Employee's email.
+ *                                 example: "claudio.franza@gmail.com"
+ *                               dateOfBirth:
+ *                                 type: string
+ *                                 description: Employee's dateOfBirth.
+ *                                 example: "01/01/1997"
+ *                               userType:
+ *                                 type: string
+ *                                 description: Employee's type is 1.
+ *                                 example: "1"
+ *                       location:
+ *                           type: object
  *                           properties:
- *                             0:
- *                               type: string
- *                               description: Employee's device's imei.
- *                               example: "453555137237678"
- * 
  */
+
+//prende l'amministratore predefinito
 app.get('/administrator', (request, response) => {
 
     database.collection("Administrator").find({"_id": _idAmministratore}).toArray((error, result) => {
@@ -143,60 +166,74 @@ app.get('/administrator', (request, response) => {
  * /administrator:
  *   post:
  *     summary: Add an administrator.
- *     description: Retrieve a list of employees from the Server.
+ *     description: Add an administrator.
  *     responses:
  *       200:
- *         description: A list of employees.
+ *         description: Add an administrator.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
  *                       _id:
  *                         type: ObjectId
- *                         description: Employee's id.
+ *                         description: Administrator's id.
  *                         example: 61b282626909cbff33c194af
- *                       passwordHash:
- *                         type: string
- *                         description: Employee's password encrypted with SHA1 hash.
- *                         example: "5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8"
- *                       email:
- *                          type: string
- *                          description: Employee's email.
- *                          example: "luigi@gmail.com"
- *                       userType:
- *                          type: string
- *                          description: Employee's type is 1.
- *                          example: 1
  *                       name:
  *                          type: string
- *                          description: Employee's name.
+ *                          description: Administrator's name.
  *                          example: "Luigi"
  *                       surname:
  *                          type: string
- *                          description: The product's location.
+ *                          description: Administrator's surname.
  *                          example: "Bonetto"
+ *                       passwordHash:
+ *                         type: string
+ *                         description: Administrator's password encrypted with SHA256 hash.
+ *                         example: "5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8"
+ *                       email:
+ *                          type: string
+ *                          description: Administrator's email.
+ *                          example: "luigi.bonetto@gmail.com"
  *                       dateOfBirth:
- *                          type: Date
- *                          description: Employee's date of birth
- *                          example: 1998-10-08T23:00:00.000+00:00
- *                       imeiList:
- *                         type: array
- *                         items:
- *                           type: string
+ *                          type: string
+ *                          description: Administrator's date of birth
+ *                          example: 07/09/1980
+ *                       userType:
+ *                          type: string
+ *                          description: Administrator's type is 0.
+ *                          example: 0
+ *                       employeesList:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *                             properties:
+ *                       location:
+ *                           type: object
  *                           properties:
- *                             0:
+ *                             locationId:
+ *                               type: ObjectId
+ *                               description: Location's id.
+ *                               example: 61b54a4252b010dff740db83
+ *                             locationName:
  *                               type: string
- *                               description: Employee's device's imei.
- *                               example: "453555137237678"
- * 
+ *                               description:
+ *                               example: Museo Castello del Buonconsiglio.
+ *                             locationOpeningHours:
+ *                               type: string
+ *                               description: The hours where the location of interest is open.
+ *                               example: The museum is open from tuesday to sunday, from 9:30am to 17:00pm every day
+ *                             locationTicketPrice:
+ *                               type: int
+ *                               description: Ticket's price.
+ *                               example: 5
+ *                             locationDescription:
+ *                               type: string
+ *                               description: A short description of the location of interest.
+ *                               example: Il castello del Buonconsiglio è uno degli edifici più conosciuti di Trento e uno tra i maggiori complessi monumentali del Trentino-Alto Adige
  */
 
+//prende un determinato employee dall'amministratore predefinito
  app.post('/administrator', (request, response) => {
 
     database.collection("Administrator").count({}, function (error, numOfAdministrator) {
@@ -228,62 +265,50 @@ app.get('/administrator', (request, response) => {
 })
 
 
+//DA QUA IN GIU CONTROLLARE
+
 /**
  * @swagger
- * /administrator:
- *   post:
+ * /employee/{id}:
+ *   get:
  *     summary: Retrieve an Employee from the administrator.
  *     description: Retrieve an Employee from the administrator.
  *     responses:
  *       200:
- *         description: An Employee.
+ *         description: Retrieve an Employee from the administrator an Employee.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
  *                       _id:
  *                         type: ObjectId
  *                         description: Employee's id.
- *                         example: 61b282626909cbff33c194af
+ *                         example: "61b62e50edc707e00f53cc23"
+ *                       nome:
+ *                         type: string
+ *                         description: Employee's name.
+ *                         example: "Claudio"
+ *                       surname:
+ *                         type: string
+ *                         description: Employee's surname.
+ *                         example: "Franza"
  *                       passwordHash:
  *                         type: string
- *                         description: Employee's password encrypted with SHA1 hash.
- *                         example: "5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8"
+ *                         description: Employee's password encrypted with SHA256 hash.
+ *                         example: "1f489582f7ea4c208b70219a2bb6a322227a7516630530a10ed7f2710cfbe447"
  *                       email:
- *                          type: string
- *                          description: Employee's email.
- *                          example: "luigi@gmail.com"
+ *                         type: string
+ *                         description: Employee's email.
+ *                         example: "claudio.franza@gmail.com"
+ *                       dateOfBirth:
+ *                         type: string
+ *                         description: Employee's dateOfBirth.
+ *                         example: "01/01/1997"
  *                       userType:
  *                          type: string
  *                          description: Employee's type is 1.
- *                          example: 1
- *                       name:
- *                          type: string
- *                          description: Employee's name.
- *                          example: "Luigi"
- *                       surname:
- *                          type: string
- *                          description: The product's location.
- *                          example: "Bonetto"
- *                       dateOfBirth:
- *                          type: Date
- *                          description: Employee's date of birth
- *                          example: 1998-10-08T23:00:00.000+00:00
- *                       imeiList:
- *                         type: array
- *                         items:
- *                           type: string
- *                           properties:
- *                             0:
- *                               type: string
- *                               description: Employee's device's imei.
- *                               example: "453555137237678"
+ *                          example: "1"
  * 
  */
 
@@ -303,6 +328,8 @@ app.get('/employee/:id', (request, response) => {
 })
 
 
+
+
 //prende la lista di employee dall'amministratore predefinito
 app.get('/employee', (request, response) => {
 
@@ -317,6 +344,7 @@ app.get('/employee', (request, response) => {
        })
     
 })
+
 
 /**
  * @swagger
@@ -414,15 +442,17 @@ app.delete('/administrator/:id', (request, response) => {
 
     response.send("Administrator deleted");
 })
+
+
 /**
  * @swagger
  * /ticket/{id}:
  *   get:
- *     summary: Retrieve a ticket with a specifi id.
- *     description: Retrieve a ticket with a specifi id.
+ *     summary: Retrieve a ticket with a specific id.
+ *     description: Retrieve a ticket with a specific id.
  *     responses:
  *       200:
- *         description: A list of ticket.
+ *         description: Ticket found
  *       404:
  *         description: Ticket not found
  *         content:
@@ -430,23 +460,57 @@ app.delete('/administrator/:id', (request, response) => {
  *             schema:
  *               type: object
  *               properties:
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       Name:
- *                         type: integer
- *                         description: The product Name.
- *                         example: Antonio
- *                       Price:
- *                         type: string
- *                         description: The product's price.
- *                         example: 20.0
- *                       Location:
+ *                       _id:
+ *                          type: ObjectId
+ *                          description: The object's id
+ *                          example: 61b54afada072e0945a55b02
+ *                       customerName:
  *                          type: string
- *                          description: The product's location
- *                          example: Refrigerated foods
+ *                          description: The customer name.
+ *                          example: Mario
+ *                       customerSurname:
+ *                          type: string
+ *                          description: The customer surname.
+ *                          example: Rossi
+ *                       customerEmail:
+ *                          type: string
+ *                          description: The customer's email.
+ *                          example: "Mario.Rossi@gmail.com"
+ *                       ticketDate:
+ *                          type: string
+ *                          description: THE ticket's date
+ *                          example: 21/12/2021
+ *                       refunded:
+ *                          type: boolean
+ *                          description: Says if the ticket has been refunded 
+ *                          example: false
+ *                       validated:
+ *                          type: boolean
+ *                          description: Says if the ticket has been validated
+ *                          example: false
+ *                       location:
+ *                         type: object
+ *                         properties:
+ *                             locationId:
+ *                               type: ObjectId
+ *                               description: Location's id.
+ *                               example: 61b54a4252b010dff740db83
+ *                             locationName:
+ *                               type: string
+ *                               description:
+ *                               example: Museo Castello del Buonconsiglio.
+ *                             locationOpeningHours:
+ *                               type: string
+ *                               description: The hours where the location of interest is open.
+ *                               example: The museum is open from tuesday to sunday, from 9:30am to 17:00pm every day
+ *                             locationTicketPrice:
+ *                               type: int
+ *                               description: Ticket's price.
+ *                               example: 5
+ *                             locationDescription:
+ *                               type: string
+ *                               description: A short description of the location of interest.
+ *                               example: Il castello del Buonconsiglio è uno degli edifici più conosciuti di Trento e uno tra i maggiori complessi monumentali del Trentino-Alto Adige
  */
 
 //ritorna un determinato ticket dato l'id
