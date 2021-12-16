@@ -290,7 +290,7 @@ app.get('/administrator', (request, response) => {
  * @swagger
  * /employee/{id}:
  *   get:
- *     summary: Retrieve an employee with a specific id.
+ *     summary: Retrieve an employee with a specific id (used for debugging).
  *     parameters:
  *       - in: path
  *         name: id
@@ -444,35 +444,6 @@ app.delete('/employee/:id', (request, response) => {
     response.send("Employee deleted");
 })
 
-
-/**
- * @swagger
- * /api/prodotti:
- *   post:
- *     summary: Create a product.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               Name:
- *                  type: integer
- *                  description: The product Name.
- *                  example: Antonio
- *               Price:
- *                  type: string
- *                  description: The product's price.
- *                  example: 20.0
- *               Location:
- *                  type: string
- *                  description: The product's location
- *                  example: Refrigerated foods
- *     responses:
- *       201:
- *         description: successful executed
-*/
 
 /**
  * @swagger
@@ -666,7 +637,7 @@ app.delete('/administrator/:id', (request, response) => {
  *                       customerEmail:
  *                          type: string
  *                          description: The customer's email.
- *                          example: "Mario.Rossi@gmail.com"
+ *                          example: "mario.rossi@gmail.com"
  *                       ticketDate:
  *                          type: string
  *                          description: THE ticket's date
@@ -747,7 +718,7 @@ app.delete('/administrator/:id', (request, response) => {
  *               customerEmail:
  *                  type: string
  *                  description: The customer's email.
- *                  example: "Mario.Rossi@gmail.com"
+ *                  example: "mario.rossi@gmail.com"
  *               ticketDate:
  *                  type: string
  *                  description: THE ticket's date
@@ -853,6 +824,34 @@ app.put('/ticket/:id', (request, response) => {
     );
         
     response.send("Ticket validated");
+})
+
+
+/**
+ * @swagger
+ * /ticket/{id}:
+ *   delete:
+ *     summary: Delete a ticket with a specific id (used for debugging).
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *             type: string
+ *         required: true
+ *         description: administrator's id
+ *     responses:
+ *       200:
+ *         description: Ticket deleted
+*/
+
+//cancella un biglietto con un determinato id
+app.delete('/ticket/:id', (request, response) => {
+
+    database.collection("Ticket").deleteOne({
+        _id: ObjectId(request.params.id)
+    });
+
+    response.send("Ticket deleted");
 })
 
 
