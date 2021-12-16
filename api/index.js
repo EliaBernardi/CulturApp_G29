@@ -70,11 +70,11 @@ app.get('/', (request, response) => {
  * @swagger
  * /administrator:
  *   get:
- *     summary: Return all information of a specific administrator.
- *     description: Retrieve all information of an administrator from the Server.
+ *     summary: Return all information of the administrator (used for debugging).
+ *     description: Retrieve all information of the administrator from the Server.
  *     responses:
  *       200:
- *         description: Return all information of a specific administrator.
+ *         description: Return all information of the administrator.
  *         content:
  *           application/json:
  *             schema:
@@ -144,6 +144,26 @@ app.get('/', (request, response) => {
  *                       location:
  *                           type: object
  *                           properties:
+ *                             locationId:
+ *                               type: ObjectId
+ *                               description: Location's id.
+ *                               example: 61b54a4252b010dff740db83
+ *                             locationName:
+ *                               type: string
+ *                               description:
+ *                               example: Museo Castello del Buonconsiglio.
+ *                             locationOpeningHours:
+ *                               type: string
+ *                               description: The hours where the location of interest is open.
+ *                               example: The museum is open from tuesday to sunday, from 9:30am to 17:00pm every day
+ *                             locationTicketPrice:
+ *                               type: int
+ *                               description: Ticket's price.
+ *                               example: 5
+ *                             locationDescription:
+ *                               type: string
+ *                               description: A short description of the location of interest.
+ *                               example: Il castello del Buonconsiglio è uno degli edifici più conosciuti di Trento e uno tra i maggiori complessi monumentali del Trentino-Alto Adige
  */
 
 //prende l'amministratore predefinito
@@ -165,16 +185,14 @@ app.get('/administrator', (request, response) => {
  * @swagger
  * /administrator:
  *   post:
- *     summary: Add an administrator.
- *     description: Add an administrator.
- *     responses:
- *       200:
- *         description: Add an administrator.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
+ *     summary: Add an administrator (used for debugging).
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
  *                       _id:
  *                         type: ObjectId
  *                         description: Administrator's id.
@@ -231,9 +249,12 @@ app.get('/administrator', (request, response) => {
  *                               type: string
  *                               description: A short description of the location of interest.
  *                               example: Il castello del Buonconsiglio è uno degli edifici più conosciuti di Trento e uno tra i maggiori complessi monumentali del Trentino-Alto Adige
- */
+ *     responses:
+ *       200:
+ *         description: Add an administrator.
+*/
 
-//prende un determinato employee dall'amministratore predefinito
+//crea una amministratore
  app.post('/administrator', (request, response) => {
 
     database.collection("Administrator").count({}, function (error, numOfAdministrator) {
@@ -265,17 +286,21 @@ app.get('/administrator', (request, response) => {
 })
 
 
-//DA QUA IN GIU CONTROLLARE
-
 /**
  * @swagger
  * /employee/{id}:
  *   get:
- *     summary: Retrieve an Employee from the administrator.
- *     description: Retrieve an Employee from the administrator.
+ *     summary: Retrieve an employee with a specific id.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Retrieve an employee with a specific id.
  *     responses:
  *       200:
- *         description: Retrieve an Employee from the administrator an Employee.
+ *         description: Employee found.
+ *       404:
+ *         description: Employee not found.
  *         content:
  *           application/json:
  *             schema:
@@ -309,7 +334,6 @@ app.get('/administrator', (request, response) => {
  *                          type: string
  *                          description: Employee's type is 1.
  *                          example: "1"
- * 
  */
 
 //prende un determinato employee dall'amministratore predefinito
@@ -328,7 +352,51 @@ app.get('/employee/:id', (request, response) => {
 })
 
 
-
+/**
+ * @swagger
+ * /employee:
+ *   get:
+ *     summary: Retrieve all the employees of the administrator.
+ *     description: Retrieve all the employees the an administrator.
+ *     responses:
+ *       200:
+ *         description: Retrieve all the employees of an administrator.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                       _id:
+ *                         type: ObjectId
+ *                         description: Employee's id.
+ *                         example: "61b62e50edc707e00f53cc23"
+ *                       nome:
+ *                         type: string
+ *                         description: Employee's name.
+ *                         example: "Claudio"
+ *                       surname:
+ *                         type: string
+ *                         description: Employee's surname.
+ *                         example: "Franza"
+ *                       passwordHash:
+ *                         type: string
+ *                         description: Employee's password encrypted with SHA256 hash.
+ *                         example: "1f489582f7ea4c208b70219a2bb6a322227a7516630530a10ed7f2710cfbe447"
+ *                       email:
+ *                         type: string
+ *                         description: Employee's email.
+ *                         example: "claudio.franza@gmail.com"
+ *                       dateOfBirth:
+ *                         type: string
+ *                         description: Employee's dateOfBirth.
+ *                         example: "01/01/1997"
+ *                       userType:
+ *                          type: string
+ *                          description: Employee's type is 1.
+ *                          example: "1"
+ */
 
 //prende la lista di employee dall'amministratore predefinito
 app.get('/employee', (request, response) => {
@@ -350,7 +418,7 @@ app.get('/employee', (request, response) => {
  * @swagger
  * /employee/{id}:
  *   delete:
- *     summary: Delete an employee.
+ *     summary: Delete an employee with a specific id.
  *     parameters:
  *       - in: path
  *         name: id
@@ -360,9 +428,9 @@ app.get('/employee', (request, response) => {
  *         description: employee's id
  *     responses:
  *       200:
- *         description: employee was deleted
+ *         description: Employee deleted
  *       404:
- *         description: employee was not found
+ *         description: Employee not found
 */
 
 //cancella un determinato employee dall'amministratore predefinito
@@ -375,6 +443,79 @@ app.delete('/employee/:id', (request, response) => {
     );
     response.send("Employee deleted");
 })
+
+
+/**
+ * @swagger
+ * /api/prodotti:
+ *   post:
+ *     summary: Create a product.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               Name:
+ *                  type: integer
+ *                  description: The product Name.
+ *                  example: Antonio
+ *               Price:
+ *                  type: string
+ *                  description: The product's price.
+ *                  example: 20.0
+ *               Location:
+ *                  type: string
+ *                  description: The product's location
+ *                  example: Refrigerated foods
+ *     responses:
+ *       201:
+ *         description: successful executed
+*/
+
+/**
+ * @swagger
+ * /employee/:
+ *   put:
+ *     summary: Update the administor's employee list by adding a new employee.
+ *     requestBody:
+ *       required: true
+ *     parameters:
+ *       - in: query
+ *         name: name
+ *         example: "Claudio"
+ *         schema:
+ *             type: string
+ *         description: employee's name.
+ *       - in: query
+ *         name: surname
+ *         example: "Franza"
+ *         schema:
+ *             type: string
+ *         description: employee's surname.
+ *       - in: query
+ *         name: passwordHash
+ *         example: "1f489582f7ea4c208b70219a2bb6a322227a7516630530a10ed7f2710cfbe447"
+ *         schema:
+ *             type: string
+ *         description: employee's password encrypted with SHA256 hash.
+ *       - in: query
+ *         name: email
+ *         example: "claudio.franza@gmail.com"
+ *         schema:
+ *             type: string
+ *         description: employee's email.
+ *       - in: query
+ *         name: dateOfBirth
+ *         example: "01/01/1997"
+ *         schema:
+ *             type: string
+ *         description: employee's date of birth.                    
+ *     responses:
+ *       200:
+ *         description: Employee was added
+*/
 
 
 //aggiunge un employee all'amministratore predefinito
@@ -393,6 +534,56 @@ app.put('/employee', (request, response) => {
     response.send("Employee created");
 })
 
+
+/**
+ * @swagger
+ * /employee/{id}:
+ *   put:
+ *     summary: Update an employee with a specific id.
+ *     requestBody:
+ *       required: true
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *             type: string
+ *         required: true
+ *         description: employee's id.
+ *       - in: query
+ *         name: name
+ *         example: "Claudio"
+ *         schema:
+ *             type: string
+ *         description: employee's name.
+ *       - in: query
+ *         name: surname
+ *         example: "Franza"
+ *         schema:
+ *             type: string
+ *         description: employee's surname.
+ *       - in: query
+ *         name: passwordHash
+ *         example: "1f489582f7ea4c208b70219a2bb6a322227a7516630530a10ed7f2710cfbe447"
+ *         schema:
+ *             type: string
+ *         description: employee's password encrypted with SHA256 hash.
+ *       - in: query
+ *         name: email
+ *         example: "claudio.franza@gmail.com"
+ *         schema:
+ *             type: string
+ *         description: employee's email.
+ *       - in: query
+ *         name: dateOfBirth
+ *         example: "01/01/1997"
+ *         schema:
+ *             type: string
+ *         description: employee's date of birth.
+ *     
+ *     responses:
+ *       200:
+ *         description: Employee was updated
+*/
 
 //modifica un determinato employee dall'amministratore predefinito
 app.put('/employee/:id', (request, response) => {
@@ -418,7 +609,7 @@ app.put('/employee/:id', (request, response) => {
  * @swagger
  * /administrator/{id}:
  *   delete:
- *     summary: Delete an administrator.
+ *     summary: Delete an administrator with a specific id (used for debugging).
  *     parameters:
  *       - in: path
  *         name: id
@@ -428,9 +619,9 @@ app.put('/employee/:id', (request, response) => {
  *         description: administrator's id
  *     responses:
  *       200:
- *         description: administrator was deleted
+ *         description: Administrator deleted
  *       404:
- *         description: administrator was not found
+ *         description: Administrator not found
 */
 
 //cancella un determinato amministratore
@@ -462,7 +653,7 @@ app.delete('/administrator/:id', (request, response) => {
  *               properties:
  *                       _id:
  *                          type: ObjectId
- *                          description: The object's id
+ *                          description: The ticket's id
  *                          example: 61b54afada072e0945a55b02
  *                       customerName:
  *                          type: string
@@ -595,7 +786,7 @@ app.delete('/administrator/:id', (request, response) => {
  *              
  *     responses:
  *       200:
- *         description: ticket created
+ *         description: Ticket created
 */
 
 //crea un ticket all'interno della collection
@@ -632,7 +823,7 @@ app.post('/ticket', (request, response) => {
  * @swagger
  * /ticket/{id}:
  *   put:
- *     summary: Validate a ticket.
+ *     summary: Validate a ticket with a specific id.
  *     parameters:
  *       - in: path
  *         name: id
@@ -673,7 +864,7 @@ app.put('/ticket/:id', (request, response) => {
  *     description: Retrieve the information of the point of interest.
  *     responses:
  *       200:
- *         description: the information.
+ *         description: The information.
  *         content:
  *           application/json:
  *             schema:
@@ -715,3 +906,4 @@ app.get('/pointOfInterest', (request, response) => {
            response.send(ris);
        })    
 })
+
