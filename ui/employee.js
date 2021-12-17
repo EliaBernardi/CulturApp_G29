@@ -3,7 +3,7 @@ const employee = {
   <div>
   <div class="top-right-navbar-buttons">
     <button type="button" class="btn btn-primary px-4 py-0 mx-3" data-bs-toggle="modal" data-bs-target="#addModal" @click="addClick()">Aggiungi dipendente</button>
-    <button id="deleteButton" type="button" class="btn btn-light px-2 py-0 mx-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasConferma" @click="deleteClick()">Elimina dipendenti</button>
+    <button id="deleteButton" type="button" class="btn btn-danger px-2 px-4 py-0 mx-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasConferma">Elimina dipendenti</button>
   </div>
   <ul class="list-group list-group-flush">
     <li v-for="(emp,  index) in employees" :key="index" class="list-group-item">
@@ -25,14 +25,14 @@ const employee = {
         </div>
         <div class="col d-flex justify-content-center align-items-center">
           <p style="padding: 13px 16px; border-radius: 10px; width: 80%" class="m-0 p-bg-dark border border-dark text-center">
-            <b>Data di nascita: </b>{{index}}
+            <b>Data di nascita: </b>{{emp.dateOfBirth}}
           </p>
         </div>
         <div class="col-1 d-flex justify-content-center align-items-center">
           <button type="button" class="btn btn-light px-2 py-0" data-bs-toggle="modal" data-bs-target="#modifyModal" @click="modifyClick(emp)">Modifica utente</button>
         </div>
         <div class="col-1 d-flex justify-content-center align-items-center">
-        <input id="deleteCheckbox" v-on:click="checkboxClickHandler" class="form-check-input" type="checkbox" v-bind:value=index v-model="checkedEmployees"></input>
+        <input v-bind:id="index" v-on:click="checkboxClickHandler" class="form-check-input" type="checkbox" v-bind:value=index v-model="checkedEmployees"></input>
         </div>
       </div>
     </li>
@@ -160,10 +160,11 @@ const employee = {
   <!-- offcanvas conferma eliminazione employees -->
 
   <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasConferma" aria-labelledby="offcanvasConfermaLabel">
-  <div class="offcanvas-body">
-    <button type="button" class="btn btn-primary" style="height: 100%; width: 100%" @click="deleteEmployee">Conferma eliminzione</button>
+    <div class="offcanvas-body">
+      <button id="dismissOffcanvasConferma" type="button" class="btn-close text-reset d-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      <button type="button" class="btn btn-primary" style="height: 100%; width: 100%" @click="deleteEmployee()">Conferma eliminzione</button>
+    </div>
   </div>
-</div>
 
 
 </div>
@@ -195,6 +196,7 @@ const employee = {
       this.name = ''
       this.surname = ''
       this.email = ''
+      this.passwordHash = ''
       this.dateOfBirth = ''
     },
     modifyClick(employee) {
@@ -205,8 +207,14 @@ const employee = {
       this.dateOfBirth = employee.dateOfBirth
       this.passwordHash = employee.passwordHash
     },
-    deleteClick() {
-
+    deleteEmployee() {
+      this.checkedEmployees.forEach(empIndex => {
+        axios.delete(variables.API_URL + '/employee/' + this.employees[empIndex]._id)
+        .then((response) => {
+          this.fetchData()
+          document.body.querySelector('#dismissOffcanvasConferma').click()
+        });
+      });
     },
     createEmployee() {
       //@TODO qui non funziona, scegli tipologia di dato con cui fare calcoli
@@ -220,16 +228,19 @@ const employee = {
       })
         .then((response) => {
           this.fetchData()
-          alert(response.data)
-          document.querySelector('#dismissModalButton').click()
+          document.body.querySelector('#dismissModalButton').click()
         });
     },
     checkboxClickHandler: function (event) {
       //al momento dell'esecuzione lo stato delle chackbox è già stato cambiato!
-      if (event.target.checked)
+      if (event.target.checked) {
+        this.checkedEmployees.push(event.target.id)
         this.checkboxChecked++
-      else
+      }
+      else {
+        this.checkedEmployees.splice(this.checkedEmployees.indexOf(event.target.id), 1)
         this.checkboxChecked--
+      }
       if (this.checkboxChecked > 0)
         this.deleteButton.disabled = false
       else
