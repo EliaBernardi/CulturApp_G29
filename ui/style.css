@@ -2,51 +2,24 @@ html {
   height: 100vh;
 }
 
+
 body {
   background-color: rgb(255, 255, 255);
+  backdrop-filter: blur(150px);
   overflow-y: hidden;
-  height: 100%;
+  height: 100vh;
 }
 
 router-link {
   cursor: pointer;
 }
 
-.navbar-blur {
-  position: fixed;
-  top: -6px;
-  left: -6px;
-  height: 91px;
-  background: rgba(0, 0, 0, .5);
-  -webkit-filter: blur(6px);
-  -moz-filter: blur(6px);
-  -o-filter: blur(6px);
-  -ms-filter: blur(6px);
-  filter: blur(6px);
-  z-index: 1010;
-}
-
-.navbar-blur {
-  position: fixed;
-  top: -6px;
-  left: -6px;
-  height: 91px;
-  background: rgba(0, 0, 0, .5);
-  -webkit-filter: blur(6px);
-  -moz-filter: blur(6px);
-  -o-filter: blur(6px);
-  -ms-filter: blur(6px);
-  filter: blur(6px);
-  z-index: 1010;
-}
-
-#googleMap {
-  left:0;
-  top: 0;
+#map {
+  /*left:0;
+  bottom: 0;*/
   height: calc(100vh - 56px);
   width: -webkit-fill-available;
   width: -moz-available;
-  position: relative;
 }
 
 .form-check-input.large-spacing {
@@ -54,10 +27,51 @@ router-link {
   padding: 10px;
 }
 
-.btn.top-right {
+/* .btn.top-right {
   position: absolute;
   height: 30px;
   top: 13px;
   right: 12px;
   font-size: 1rem;
+} */
+
+.top-right-navbar-buttons {
+  position: absolute;
+  height: 30px;
+  top: 13px;
+  right: 0;
+  display: flex;
+}
+
+.list-group-item {
+  border-color: rgb(0, 0, 0);
+  background-color: transparent;
+}
+
+.form-check-input {
+  width: 1.5em;
+  height: 1.5em;
+  margin-top: 0;
+}
+
+.p-bg-dark {
+  background-color: rgb(33, 37, 41);
+  color: white;
+}
+
+.offcanvas-top {
+  height: 15vh;
+}
+
+.offcanvas-header {
+  padding-left: 1rem;
+  padding-top: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 0;
+}
+
+.offcanvas-body {
+  padding-left: 1rem;
+  padding-top: 1rem;
+  padding-right: 1rem;
 }

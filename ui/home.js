@@ -1,11 +1,48 @@
 const home = {
-  template: '<iframe id="googleMap" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2767.9744824597624!2d11.12441931557788!3d46.071549979112696!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x478276ca86c49851%3A0xcd99fac5fcd9a3b6!2sMuseo%20Castello%20del%20Buonconsiglio!5e0!3m2!1sit!2sit!4v1639182660712!5m2!1sit!2sit" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>',
+  template: '<div id="map"></div>',
+  data() {
+    return {
+      zoom: 17,
+      map: '',
+      mapCenter: '',
+      marker: '',
+      markerPosition: '',
+      markerTitle: 'Museo del Buonconsiglio',
+      infoWindow: '',
+      infoWindowContentMessage:'MESSAGGIO'
+    }
+  },
   methods : {
+    initMap() {
+      //const museoBuonconsiglio = { lat: 46.071562, lng: 11.126563 };
+      this.mapCenter = this.markerPosition = new google.maps.LatLng(46.071562, 11.126563);
+      this.map = new google.maps.Map(document.getElementById("map"), {
+        center: this.mapCenter,
+        zoom: this.zoom
+      });
+
+      this.marker = new google.maps.Marker({
+        position: this.markerPosition,
+        map: this.map,
+        title: this.title
+      });
+
+      this.infoWindow = new google.maps.InfoWindow({
+        content: this.infoWindowContentMessage
+      });
+
+      /****** info window with click *******/
+      this.marker.addListener('click', () => {
+        this.infoWindow.open(this.map, this.marker);
+      })
+    },
     refreshLayout() {
-      document.querySelector('#addEmployee').className = 'btn btn-light px-2 py-0 d-none';
+      //document.querySelector('#addEmployee').className = 'btn btn-light px-2 py-0 d-none';
+      document.querySelector('#map').className = '';
     }
   },
   mounted: function () {
     this.refreshLayout();
+    this.initMap();
   }
 }
