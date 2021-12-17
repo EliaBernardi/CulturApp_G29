@@ -25,7 +25,7 @@ const employee = {
         </div>
         <div class="col d-flex justify-content-center align-items-center">
           <p style="padding: 13px 16px; border-radius: 10px; width: 80%" class="m-0 p-bg-dark border border-dark text-center">
-            <b>Data di nascita: </b>{{emp.dateOfBirth}}
+            <b>Data di nascita: </b>{{ getDateOfBirth(emp.dateOfBirth)}}
           </p>
         </div>
         <div class="col-1 d-flex justify-content-center align-items-center">
@@ -81,7 +81,7 @@ const employee = {
 
               <div class="input-group mb-3">
                 <span class="input-group-text">Data di nascita</span>
-                <input type="date" class="form-control" v-model="dateOfBirth" required>
+                <input id="inputDateOfBirth" type="date" min="1900-01-01" class="form-control" :value="dateToYYYYMMDD(dateOfBirth)" @input="dateOfBirth = $event.target.valueAsDate" required>
               </div>
 
             </div>
@@ -140,7 +140,7 @@ const employee = {
                 -->
               <div class="input-group mb-3">
                 <span class="input-group-text">Data di nascita</span>
-                <input type="date" class="form-control" v-model="dateOfBirth">
+                <input id="inputDateOfBirth" type="date" min="1900-01-01" class="form-control" :value="dateToYYYYMMDD(dateOfBirth)" @input="dateOfBirth = $event.target.valueAsDate">
               </div>
 
             </div>
@@ -179,7 +179,7 @@ const employee = {
       surname: '',
       email: '',
       passwordHash: '',
-      dateOfBirth: '',
+      dateOfBirth: new Date(),
       checkboxChecked: 0,
       deleteButton: ''
     }
@@ -204,21 +204,21 @@ const employee = {
       this.name = employee.name
       this.surname = employee.surname
       this.email = employee.email
-      this.dateOfBirth = employee.dateOfBirth
+      this.dateOfBirth = new Date(parseInt(employee.dateOfBirth.substring(0, 4)),
+        parseInt(employee.dateOfBirth.substring(5, 7)) - 1,     //mese - 1!
+        parseInt(employee.dateOfBirth.substring(8, 10)) + 1)    //giorno + 1!
       this.passwordHash = employee.passwordHash
     },
     deleteEmployee() {
       this.checkedEmployees.forEach(empIndex => {
         axios.delete(variables.API_URL + '/employee/' + this.employees[empIndex]._id)
-        .then((response) => {
-          this.fetchData()
-          document.body.querySelector('#dismissOffcanvasConferma').click()
-        });
+          .then((response) => {
+            this.fetchData()
+            document.body.querySelector('#dismissOffcanvasConferma').click()
+          });
       });
     },
     createEmployee() {
-      //@TODO qui non funziona, scegli tipologia di dato con cui fare calcoli
-      //if (this.DateOfBirth < new Date().toLocaleString() - 18) {
       axios.put(variables.API_URL + "/employee", {
         name: this.name,
         surname: this.surname,
@@ -230,6 +230,14 @@ const employee = {
           this.fetchData()
           document.body.querySelector('#dismissModalButton').click()
         });
+    },
+    dateToYYYYMMDD(d) {
+      return d && d.toISOString().split('T')[0]
+    },
+    getDateOfBirth(d) {
+      let date = new Date(d)
+      let dateString = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+      return dateString
     },
     checkboxClickHandler: function (event) {
       //al momento dell'esecuzione lo stato delle chackbox è già stato cambiato!
@@ -256,5 +264,11 @@ const employee = {
     document.body.style.backgroundSize = 'cover'
     this.deleteButton = document.body.querySelector('#deleteButton')
     this.deleteButton.disabled = true
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+    today = yyyy + '-' + mm + '-' + dd;
+    document.body.querySelector('#inputDateOfBirth').setAttribute("max", today);
   }
 }
