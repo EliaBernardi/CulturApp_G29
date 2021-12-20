@@ -25,7 +25,7 @@ const employee = {
         </div>
         <div class="col d-flex justify-content-center align-items-center">
           <p style="padding: 13px 16px; border-radius: 10px; width: 80%" class="m-0 p-bg-dark border border-dark text-center">
-            <b>Data di nascita: </b>{{ getDateOfBirth(emp.dateOfBirth)}}
+            <b>Data di nascita: </b>{{getDateOfBirth(emp.dateOfBirth)}}
           </p>
         </div>
         <div class="col-1 d-flex justify-content-center align-items-center">
@@ -105,7 +105,7 @@ const employee = {
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="modifyModalLabel">{{modalTitle}}</h5>
-          <button id="dismissModalButton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button id="dismissModifyModalButton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body">
@@ -114,22 +114,22 @@ const employee = {
             <div class="p-2 bd-highlight">
               <div class="input-group mb-3">
                 <span class="input-group-text">Nome</span>
-                <input type="text" class="form-control" v-model="name">
+                <input type="text" class="form-control" v-model="newName">
               </div>
 
               <div class="input-group mb-3">
                 <span class="input-group-text">Cognome</span>
-                <input type="text" class="form-control" v-model="surname">
+                <input type="text" class="form-control" v-model="newSurname">
               </div>
 
               <div class="input-group mb-3">
                 <span class="input-group-text">Indirizzo email</span>
-                <input type="text" class="form-control" v-model="email">
+                <input type="text" class="form-control" v-model="newEmail">
               </div>
 
               <div class="input-group mb-3">
-                <span class="input-group-text">Password</span>
-                <input type="text" class="form-control" v-model="passwordHash">
+                <span class="input-group-text">Nuova password</span>
+                <input type="text" class="form-control" v-model="newPassword">
               </div>
               
             <!-- @TODO: reinserimento password con controllo
@@ -140,13 +140,13 @@ const employee = {
                 -->
               <div class="input-group mb-3">
                 <span class="input-group-text">Data di nascita</span>
-                <input id="inputDateOfBirth" type="date" min="1900-01-01" class="form-control" :value="dateToYYYYMMDD(dateOfBirth)" @input="dateOfBirth = $event.target.valueAsDate">
+                <input id="inputDateOfBirth" type="date" min="1900-01-01" class="form-control" :value="dateToYYYYMMDD(newDateOfBirth)" @input="newDateOfBirth = $event.target.valueAsDate">
               </div>
 
             </div>
           </div>
           <div class="d-grid gap-2">
-            <button type="submit" @click="createEmployee()" class="btn btn-primary">
+            <button type="submit" @click="modifyEmployee()" class="btn btn-primary">
               Modifica
             </button>
           </div>
@@ -176,10 +176,15 @@ const employee = {
       checkedEmployees: [],
       modalTitle: '',
       name: '',
+      newName: '',
       surname: '',
+      newSurname: '',
       email: '',
+      newEmail: '',
       passwordHash: '',
+      newPassword: '',
       dateOfBirth: new Date(),
+      newDateOfBirth: new Date(),
       checkboxChecked: 0,
       deleteButton: ''
     }
@@ -188,6 +193,7 @@ const employee = {
     fetchData() {
       axios.get(variables.API_URL + '/employee')
         .then((response) => {
+          this.employees = []
           this.employees = response.data
         });
     },
@@ -207,7 +213,15 @@ const employee = {
       this.dateOfBirth = new Date(parseInt(employee.dateOfBirth.substring(0, 4)),
         parseInt(employee.dateOfBirth.substring(5, 7)) - 1,     //mese - 1!
         parseInt(employee.dateOfBirth.substring(8, 10)) + 1)    //giorno + 1!
-      this.passwordHash = employee.passwordHash
+      this.passwordHash = ''
+      this.newName = employee.name
+      this.newSurname = employee.surname
+      this.newEmail = employee.email
+      this.newDateOfBirth = new Date(parseInt(employee.dateOfBirth.substring(0, 4)),
+      parseInt(employee.dateOfBirth.substring(5, 7)) - 1,     //mese - 1!
+      parseInt(employee.dateOfBirth.substring(8, 10)) + 1)    //giorno + 1!
+      this.newPassword = ''
+      console.log(employee)
     },
     deleteEmployee() {
       this.checkedEmployees.forEach(empIndex => {
@@ -231,16 +245,33 @@ const employee = {
           document.body.querySelector('#dismissModalButton').click()
         });
     },
+    modifyEmployee() {
+      var indexOfEmp = this.employees.findIndex(emp => emp.name == this.name && emp.surname == this.surname && emp.email == this.email)
+      if (this.newPassword != '')
+        this.passwordHash = this.newPassword
+      axios.put(variables.API_URL + "/employee/" + this.employees[indexOfEmp]._id, {
+        name: this.newName,
+        surname: this.newSurname,
+        email: this.newEmail,
+        passwordHash: this.passwordHash,
+        dateOfBirth: this.newDateOfBirth
+      })
+        .then((response) => {
+          this.fetchData()
+          document.body.querySelector('#dismissModifyModalButton').click()
+        });
+    },
     dateToYYYYMMDD(d) {
       return d && d.toISOString().split('T')[0]
     },
     getDateOfBirth(d) {
-      let date = new Date(d)
-      let dateString = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+      var date = new Date(d)
+      var dateISO = (date.toISOString().split('T')[0]).split('-')
+      var dateString = dateISO[2] + '/' + dateISO[1] + '/' + dateISO[0]
       return dateString
     },
     checkboxClickHandler: function (event) {
-      //al momento dell'esecuzione lo stato delle chackbox è già stato cambiato!
+      //al momento dell'esecuzione lo stato delle checkbox è già stato cambiato!
       if (event.target.checked) {
         this.checkedEmployees.push(event.target.id)
         this.checkboxChecked++
