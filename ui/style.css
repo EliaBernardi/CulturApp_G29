@@ -75,3 +75,16 @@ router-link {
   padding-top: 1rem;
   padding-right: 1rem;
 }
+
+.personal-info-box {
+  background-color: rgb(80, 255, 0, 0.06);
+  border-radius: 25px;
+  position: fixed;
+  top: 25vh;
+  left: 30vw;
+  width: 40vw;
+}
+
+.title.white {
+  color: white;
+}
