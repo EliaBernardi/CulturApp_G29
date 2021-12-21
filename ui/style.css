@@ -88,3 +88,24 @@ router-link {
 .title.white {
   color: white;
 }
+
+.row.ticket-row {
+  position: relative;
+  margin-top: 10vh;
+  height: auto;
+}
+
+.col.ticket-box {
+  position: relative;
+  padding-left: 5vw;
+  padding-right: 5vw;
+}
+
+.card {
+  padding: 10px;
+}
+
+.card-body {
+  padding-top: 5px;
+  padding-bottom: 0;
+}

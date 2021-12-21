@@ -20,39 +20,39 @@ var database;
 
 app.listen(49146, () => {
 
-    MongoClient.connect(CONNECTION_STRING, { useNewUrlParser: true }, (error, client) => {
-        database = client.db(DATABASE);
-        console.log("Mongo DB Connection Successfull");
-    })
+  MongoClient.connect(CONNECTION_STRING, { useNewUrlParser: true }, (error, client) => {
+    database = client.db(DATABASE);
+    console.log("Mongo DB Connection Successfull");
+  })
 });
 
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const swaggerOptions = {
-    swaggerDefinition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'Express API for CulturApp',
-            version: '1.0.0',
-            description:
-                'This is a REST API application made with Express.',
-            license: {
-                name: 'Licensed Under MIT',
-                url: 'https://spdx.org/licenses/MIT.html',
-            },
-            contact: {
-                name: 'GroupXX',
-                url: 'http://localhost:49146/',
-            },
-        },
-        servers: [
-            {
-                url: 'http://localhost:49146/', 
-                description: 'Development server',
-            },
-        ],
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Express API for CulturApp',
+      version: '1.0.0',
+      description:
+        'This is a REST API application made with Express.',
+      license: {
+        name: 'Licensed Under MIT',
+        url: 'https://spdx.org/licenses/MIT.html',
+      },
+      contact: {
+        name: 'GroupXX',
+        url: 'http://localhost:49146/',
+      },
     },
-    apis: ["index.js"]
+    servers: [
+      {
+        url: 'http://localhost:49146/',
+        description: 'Development server',
+      },
+    ],
+  },
+  apis: ["index.js"]
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -62,7 +62,7 @@ var _idAmministratore = ObjectId("61b62d85d4fcaf1dc5751355");
 var SHA256 = require("crypto-js/sha256");
 
 app.get('/', (request, response) => {
-    response.json('Hello World');
+  response.json('Hello World');
 });
 
 
@@ -169,15 +169,15 @@ app.get('/', (request, response) => {
 //prende l'amministratore predefinito
 app.get('/administrator', (request, response) => {
 
-    database.collection("Administrator").find({"_id": _idAmministratore}).toArray((error, result) => {
-           if (error) {
-               response.status(404)
-               response.send("Administrator not found")
-               return
-           }
-           
-           response.send(result)
-       })
+  database.collection("Administrator").find({ "_id": _idAmministratore }).toArray((error, result) => {
+    if (error) {
+      response.status(404)
+      response.send("Administrator not found")
+      return
+    }
+
+    response.send(result)
+  })
 })
 
 
@@ -255,34 +255,34 @@ app.get('/administrator', (request, response) => {
 */
 
 //crea una amministratore
- app.post('/administrator', (request, response) => {
+app.post('/administrator', (request, response) => {
 
-    database.collection("Administrator").count({}, function (error, numOfAdministrator) {
-        if (error) {
-            response.status(404)
-            response.send("Administrator was not created")
-            return
-        }
+  database.collection("Administrator").count({}, function (error, numOfAdministrator) {
+    if (error) {
+      response.status(404)
+      response.send("Administrator was not created")
+      return
+    }
 
-        database.collection("Administrator").insertOne({
-            name: request.body['name'],
-            surname: request.body['surname'],
-            passwordHash: SHA256(request.body['passwordHash']).toString(),
-            email: request.body['email'],
-            dateOfBirth: request.body['dateOfBirth'],
-            userType: 0,
-            employeesList: [],
-            location: {
-                locationId: ObjectId("61b54a4252b010dff740db83"),
-                locationName: "Museo Castello del Buonconsiglio",
-                locationOpeningHours: 'the museum is open from tuesday to sunday, from 9:30am to 17:00pm every day',
-                locationTicketPrice: parseInt("5"),
-                locationDescription: "Il castello del Buonconsiglio è uno degli edifici più conosciuti di Trento e uno tra i maggiori complessi monumentali del Trentino-Alto Adige"
-            }
-         });
-        
-        response.json("Administrator created");
-    })
+    database.collection("Administrator").insertOne({
+      name: request.body['name'],
+      surname: request.body['surname'],
+      passwordHash: SHA256(request.body['passwordHash']).toString(),
+      email: request.body['email'],
+      dateOfBirth: request.body['dateOfBirth'],
+      userType: 0,
+      employeesList: [],
+      location: {
+        locationId: ObjectId("61b54a4252b010dff740db83"),
+        locationName: "Museo Castello del Buonconsiglio",
+        locationOpeningHours: 'the museum is open from tuesday to sunday, from 9:30am to 17:00pm every day',
+        locationTicketPrice: parseInt("5"),
+        locationDescription: "Il castello del Buonconsiglio è uno degli edifici più conosciuti di Trento e uno tra i maggiori complessi monumentali del Trentino-Alto Adige"
+      }
+    });
+
+    response.json("Administrator created");
+  })
 })
 
 
@@ -338,17 +338,16 @@ app.get('/administrator', (request, response) => {
 
 //prende un determinato employee dall'amministratore predefinito
 app.get('/employee/:id', (request, response) => {
-         
-    database.collection("Administrator").find({"_id": _idAmministratore}).toArray((error, result) =>
-        {
-            if (error || result.count == 0) {
-                response.status(404)
-                response.send("Employee not found")
-                return
-            }
-            let ris = result[0].employeesList.find(x =>  x._id = ObjectId(request.params.id));
-            response.send(ris);
-       });
+
+  database.collection("Administrator").find({ "_id": _idAmministratore }).toArray((error, result) => {
+    if (error || result.count == 0) {
+      response.status(404)
+      response.send("Employee not found")
+      return
+    }
+    let ris = result[0].employeesList.find(x => x._id = ObjectId(request.params.id));
+    response.send(ris);
+  });
 })
 
 
@@ -401,16 +400,16 @@ app.get('/employee/:id', (request, response) => {
 //prende la lista di employee dall'amministratore predefinito
 app.get('/employee', (request, response) => {
 
-    database.collection("Administrator").find({"_id": _idAmministratore}).toArray((error, result) => {
-           if (error) {
-                response.status(404)
-                response.send("Employees not found")
-                return
-           }
-           let ris = result[0].employeesList;
-           response.send(ris);
-       })
-    
+  database.collection("Administrator").find({ "_id": _idAmministratore }).toArray((error, result) => {
+    if (error) {
+      response.status(404)
+      response.send("Employees not found")
+      return
+    }
+    let ris = result[0].employeesList;
+    response.send(ris);
+  })
+
 })
 
 
@@ -436,12 +435,12 @@ app.get('/employee', (request, response) => {
 //cancella un determinato employee dall'amministratore predefinito
 app.delete('/employee/:id', (request, response) => {
 
-    database.collection("Administrator").updateOne( 
-        { "_id" : _idAmministratore} , 
-        { "$pull" : { "employeesList" : { "_id" :  ObjectId(request.params.id) } } } , 
-        { "multi" : true } 
-    );
-    response.send("Employee deleted");
+  database.collection("Administrator").updateOne(
+    { "_id": _idAmministratore },
+    { "$pull": { "employeesList": { "_id": ObjectId(request.params.id) } } },
+    { "multi": true }
+  );
+  response.send("Employee deleted");
 })
 
 
@@ -492,17 +491,21 @@ app.delete('/employee/:id', (request, response) => {
 //aggiunge un employee all'amministratore predefinito
 app.put('/employee', (request, response) => {
 
-    database.collection("Administrator").updateOne({_id: _idAmministratore}, {$push: {
-        "employeesList" : {_id: ObjectId(),
-                            name: request.body['name'],
-                            surname: request.body['surname'],
-                            passwordHash: SHA256(request.body['passwordHash']).toString(),
-                            email: request.body['email'],
-                            dateOfBirth: request.body['dateOfBirth'],
-                            userType: 1
-                        }}}
-    );
-    response.send("Employee created");
+  database.collection("Administrator").updateOne({ _id: _idAmministratore }, {
+    $push: {
+      "employeesList": {
+        _id: ObjectId(),
+        name: request.body['name'],
+        surname: request.body['surname'],
+        passwordHash: SHA256(request.body['passwordHash']).toString(),
+        email: request.body['email'],
+        dateOfBirth: request.body['dateOfBirth'],
+        userType: 1
+      }
+    }
+  }
+  );
+  response.send("Employee created");
 })
 
 
@@ -558,20 +561,22 @@ app.put('/employee', (request, response) => {
 
 //modifica un determinato employee dall'amministratore predefinito
 app.put('/employee/:id', (request, response) => {
-    database.collection("Administrator").updateOne(
-        {_id : _idAmministratore , "employeesList._id" : ObjectId(request.params.id) } , 
-                {$set : {...(request.body.name && {"employeesList.$.name": request.body['name']}),
-                        ...(request.body.surname && {"employeesList.$.surname": request.body['surname']}),
-                        ...(request.body.passwordHash && {"employeesList.$.passwordHash": request.body['passwordHash']}),
-                        ...(request.body.email && {"employeesList.$.email": request.body['email']}),
-                        ...(request.body.dateOfBirth && {"employeesList.$.dateOfBirth": request.body['dateOfBirth']}),
-                } 
-                } ,
-                false , 
-                true);
-    
-        
-    response.send("Employee modified");
+  database.collection("Administrator").updateOne(
+    { _id: _idAmministratore, "employeesList._id": ObjectId(request.params.id) },
+    {
+      $set: {
+        ...(request.body.name && { "employeesList.$.name": request.body['name'] }),
+        ...(request.body.surname && { "employeesList.$.surname": request.body['surname'] }),
+        ...(request.body.passwordHash && { "employeesList.$.passwordHash": request.body['passwordHash'] }),
+        ...(request.body.email && { "employeesList.$.email": request.body['email'] }),
+        ...(request.body.dateOfBirth && { "employeesList.$.dateOfBirth": request.body['dateOfBirth'] }),
+      }
+    },
+    false,
+    true);
+
+
+  response.send("Employee modified");
 })
 
 
@@ -598,11 +603,11 @@ app.put('/employee/:id', (request, response) => {
 //cancella un determinato amministratore
 app.delete('/administrator/:id', (request, response) => {
 
-    database.collection("Administrator").deleteOne({
-        _id: ObjectId(request.params.id)
-    });
+  database.collection("Administrator").deleteOne({
+    _id: ObjectId(request.params.id)
+  });
 
-    response.send("Administrator deleted");
+  response.send("Administrator deleted");
 })
 
 
@@ -676,18 +681,30 @@ app.delete('/administrator/:id', (request, response) => {
  */
 
 //ritorna un determinato ticket dato l'id
- app.get('/ticket/:id', (request, response) => {
-    
-    database.collection("Ticket").find({"_id": ObjectId(request.params.id)}).toArray((error, result) =>
-        {
-            if (error) {
-                response.status(404)
-               response.send("Ticket not found")
-               return
-            }
+app.get('/ticket/:id', (request, response) => {
 
-            response.send(result);
-       });
+  database.collection("Ticket").find({ "_id": ObjectId(request.params.id) }).toArray((error, result) => {
+    if (error) {
+      response.status(404)
+      response.send("Ticket not found")
+      return
+    }
+
+    response.send(result);
+  });
+})
+
+//ritorna la collezione di ticket
+app.get('/ticket', (request, response) => {
+
+  database.collection("Ticket").find().toArray((error, result) => {
+    if (error) {
+      response.status(404)
+      response.send("Tickets not found")
+      return
+    }
+    response.send(result);
+  })
 })
 
 
@@ -763,30 +780,30 @@ app.delete('/administrator/:id', (request, response) => {
 //crea un ticket all'interno della collection
 app.post('/ticket', (request, response) => {
 
-    database.collection("Ticket").count({}, function (error) {
-        if (error) {
-            response.status(404)
-            response.send("Ticket not created")
-            return
-        }
+  database.collection("Ticket").count({}, function (error) {
+    if (error) {
+      response.status(404)
+      response.send("Ticket not created")
+      return
+    }
 
-        database.collection("Ticket").insertOne({
-            customerName: request.body['name'],
-            customerSurname: request.body['surname'],
-            customerEmail: request.body['email'],
-            ticketDate: request.body['date'],
-            refunded: false,
-            validated: false,
-            location: {
-                locationId: ObjectId("61b54a4252b010dff740db83"),
-                locationName: "Museo Castello del Buonconsiglio",
-                locationOpeningHours: 'The museum is open from tuesday to sunday, from 9:30am to 17:00pm every day',
-                locationTicketPrice: parseInt("5"),
-                locationDescription: "Il castello del Buonconsiglio è uno degli edifici più conosciuti di Trento e uno tra i maggiori complessi monumentali del Trentino-Alto Adige"
-            }
-         }); 
-         response.json("Ticket created");
-    })
+    database.collection("Ticket").insertOne({
+      customerName: request.body['name'],
+      customerSurname: request.body['surname'],
+      customerEmail: request.body['email'],
+      ticketDate: request.body['date'],
+      refunded: false,
+      validated: false,
+      location: {
+        locationId: ObjectId("61b54a4252b010dff740db83"),
+        locationName: "Museo Castello del Buonconsiglio",
+        locationOpeningHours: 'The museum is open from tuesday to sunday, from 9:30am to 17:00pm every day',
+        locationTicketPrice: parseInt("5"),
+        locationDescription: "Il castello del Buonconsiglio è uno degli edifici più conosciuti di Trento e uno tra i maggiori complessi monumentali del Trentino-Alto Adige"
+      }
+    });
+    response.json("Ticket created");
+  })
 })
 
 
@@ -811,19 +828,19 @@ app.post('/ticket', (request, response) => {
 
 //valida il ticket all'interno della collection
 app.put('/ticket/:id', (request, response) => {
-    database.collection("Ticket").updateOne(
-        {
-            "_id": ObjectId(request.params.id)
-        },
-        {
-            $set:
-            {
-                validated : true
-            }
-        }
-    );
-        
-    response.send("Ticket validated");
+  database.collection("Ticket").updateOne(
+    {
+      "_id": ObjectId(request.params.id)
+    },
+    {
+      $set:
+      {
+        validated: true
+      }
+    }
+  );
+
+  response.send("Ticket validated");
 })
 
 
@@ -847,11 +864,11 @@ app.put('/ticket/:id', (request, response) => {
 //cancella un biglietto con un determinato id
 app.delete('/ticket/:id', (request, response) => {
 
-    database.collection("Ticket").deleteOne({
-        _id: ObjectId(request.params.id)
-    });
+  database.collection("Ticket").deleteOne({
+    _id: ObjectId(request.params.id)
+  });
 
-    response.send("Ticket deleted");
+  response.send("Ticket deleted");
 })
 
 
@@ -894,14 +911,14 @@ app.delete('/ticket/:id', (request, response) => {
 //ritorna le informazioni del punto di interesse
 app.get('/pointOfInterest', (request, response) => {
 
-    database.collection("Administrator").find({"_id": _idAmministratore}).toArray((error, result) => {
-           if (error) {
-                response.status(404)
-                response.send("Location of interest not found")
-                return
-           }
-           
-           let ris = result[0].location;
-           response.send(ris);
-       })    
+  database.collection("Administrator").find({ "_id": _idAmministratore }).toArray((error, result) => {
+    if (error) {
+      response.status(404)
+      response.send("Location of interest not found")
+      return
+    }
+
+    let ris = result[0].location;
+    response.send(ris);
+  })
 })

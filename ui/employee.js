@@ -29,7 +29,7 @@ const employee = {
           </p>
         </div>
         <div class="col-1 d-flex justify-content-center align-items-center">
-          <button type="button" class="btn btn-light px-2 py-0" data-bs-toggle="modal" data-bs-target="#modifyModal" @click="modifyClick(emp)">Modifica utente</button>
+          <button type="button" class="btn btn-light px-2 py-0" data-bs-toggle="modal" data-bs-target="#modifyModal" @click="modifyClick(emp)">Visualizza e modifica utente</button>
         </div>
         <div class="col-1 d-flex justify-content-center align-items-center">
         <input v-bind:id="index" v-on:click="checkboxClickHandler" class="form-check-input" type="checkbox" v-bind:value=index v-model="checkedEmployees"></input>
@@ -221,7 +221,6 @@ const employee = {
       parseInt(employee.dateOfBirth.substring(5, 7)) - 1,     //mese - 1!
       parseInt(employee.dateOfBirth.substring(8, 10)) + 1)    //giorno + 1!
       this.newPassword = ''
-      console.log(employee)
     },
     deleteEmployee() {
       this.checkedEmployees.forEach(empIndex => {
