@@ -49,12 +49,12 @@ const employee = {
         </div>
 
         <div class="modal-body">
-          <form>
+          <form class="needs-validation">
           <div class="flex-row bd-highlight mb-3">
             <div class="p-2 bd-highlight">
               <div class="input-group mb-3">
-                <span class="input-group-text">Nome</span>
-                <input type="text" class="form-control" v-model="name" required>
+                <span for="validationDefault01" class="input-group-text">Nome</span>
+                <input type="text" class="form-control" v-model="name" id="validationDefault01" required>
               </div>
 
               <div class="input-group mb-3">
@@ -218,8 +218,8 @@ const employee = {
       this.newSurname = employee.surname
       this.newEmail = employee.email
       this.newDateOfBirth = new Date(parseInt(employee.dateOfBirth.substring(0, 4)),
-      parseInt(employee.dateOfBirth.substring(5, 7)) - 1,     //mese - 1!
-      parseInt(employee.dateOfBirth.substring(8, 10)) + 1)    //giorno + 1!
+        parseInt(employee.dateOfBirth.substring(5, 7)) - 1,     //mese - 1!
+        parseInt(employee.dateOfBirth.substring(8, 10)) + 1)    //giorno + 1!
       this.newPassword = ''
     },
     deleteEmployee() {
@@ -232,17 +232,20 @@ const employee = {
       });
     },
     createEmployee() {
-      axios.put(variables.API_URL + "/employee", {
-        name: this.name,
-        surname: this.surname,
-        email: this.email,
-        passwordHash: this.passwordHash,
-        dateOfBirth: this.dateOfBirth
-      })
-        .then((response) => {
-          this.fetchData()
-          document.body.querySelector('#dismissModalButton').click()
-        });
+      const form = document.body.querySelector('.needs-validation')
+      if (form.checkValidity()) {
+        axios.put(variables.API_URL + "/employee", {
+          name: this.name,
+          surname: this.surname,
+          email: this.email,
+          passwordHash: this.passwordHash,
+          dateOfBirth: this.dateOfBirth
+        })
+          .then((response) => {
+            this.fetchData()
+            document.body.querySelector('#dismissModalButton').click()
+          });
+      }
     },
     modifyEmployee() {
       var indexOfEmp = this.employees.findIndex(emp => emp.name == this.name && emp.surname == this.surname && emp.email == this.email)
