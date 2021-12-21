@@ -224,12 +224,22 @@ const employee = {
     },
     deleteEmployee() {
       this.checkedEmployees.forEach(empIndex => {
-        axios.delete(variables.API_URL + '/employee/' + this.employees[empIndex]._id)
-          .then((response) => {
+        this.deleteEmployeeReq(empIndex)
+          .then(() => {
             this.fetchData()
-            document.body.querySelector('#dismissOffcanvasConferma').click()
+            var checks = document.body.querySelectorAll('.form-check-input')
+            checks.forEach(c => {
+              c.checked = false
+            });
           });
+        this.deleteButton.disabled = true
+        this.checkedEmployees = []
+        this.checkboxChecked = 0
+        document.body.querySelector('#dismissOffcanvasConferma').click()
       });
+    },
+    async deleteEmployeeReq(index) {
+      await axios.delete(variables.API_URL + '/employee/' + this.employees[index]._id)
     },
     createEmployee() {
       const form = document.body.querySelector('.needs-validation')
@@ -243,7 +253,9 @@ const employee = {
         })
           .then((response) => {
             this.fetchData()
-            document.body.querySelector('#dismissModalButton').click()
+            this.$nextTick(() => {
+              document.body.querySelector('#dismissModalButton').click()
+            })
           });
       }
     },
@@ -279,7 +291,11 @@ const employee = {
         this.checkboxChecked++
       }
       else {
-        this.checkedEmployees.splice(this.checkedEmployees.indexOf(event.target.id), 1)
+        const index = this.checkedEmployees.indexOf(event.target.id)
+        this.checkedEmployees.splice(index, 1)
+        for (let i = index; i < this.checkedEmployees.length; i++) {
+          this.checkedEmployees[index] = this.checkedEmployees[index] - 1
+        }
         this.checkboxChecked--
       }
       if (this.checkboxChecked > 0)
